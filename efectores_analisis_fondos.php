@@ -2,6 +2,10 @@
 $consultaexportar='';
 if (isset($_POST['consultar'])){
 
+if ((($_POST['tperiododesde'])=="")or(($_POST['tperiododesde'])=="")){
+	$salida="Por favor complete los períodos";
+} else {
+
 ini_set('max_execution_time',3990) ;
 
 
@@ -197,6 +201,8 @@ $salida=rtrim($salida,",");
 
 	if($_POST['tperiododesde']<>''){  $paramperiodo=" AND E.PERIODO IN ($salida)";  } else {  $paramperiodo = "";  }
 
+
+}// POST periodo
 } // CREO $_POST CONSULTAR
 
 ?>
@@ -204,7 +210,7 @@ $salida=rtrim($salida,",");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>.:: Consulta de Efectores ::.</title>
+<title>.:: An&aacute;lisis de Uso de Fondos ::.</title>
 
  <link rel="stylesheet" href="lib/jquery-ui.css">
   <script src="lib/jquery-1.10.2.js"></script>
@@ -645,7 +651,7 @@ $cesion_desdef=number_format($cesion_desde,2, ',', '.');
 
 <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
-<table id="datatable">
+<table border="1" id="datatable">
     <thead>
         <tr>
             <th></th>
@@ -654,75 +660,75 @@ $cesion_desdef=number_format($cesion_desde,2, ',', '.');
     </thead>
     <tbody>
         <tr>
-            <th>Uno uno</th>
+            <th>Incentivo Personal (M&eacute;dicos)</th>
             <td><?php echo $ta11; ?></td>
         </tr>
         <tr>
-            <th>Uno dos</th>
+            <th>Incentivo Personal (Enfermeros y Ag Sanitarios</th>
             <td><?php echo $ta12; ?></td>
         </tr>
         <tr>
-            <th> Uno tres</th>
+            <th> Incentivo Personal (Administrativos y Otros)</th>
             <td><?php echo $ta13; ?></td>
         </tr>
         <tr>
-            <th>Dos uno</th>
+            <th>Loc Obras y/o Servicios (M&eacute;dicos)</th>
             <td><?php echo $ta21; ?></td>
         </tr>
         <tr>
-            <th>Dos dos</th>
+            <th>Loc Obras y/o Servicios (Enfermeros y Ag Sanitarios)</th>
             <td><?php echo $ta22; ?></td>
         </tr>
         <tr>
-            <th>Dos tres</th>
+            <th>Loc Obras y/o Servicios (Administrativos y Otros)</th>
             <td><?php echo $ta23; ?></td>
         </tr>
         <tr>
-            <th>Tres uno</th>
+            <th>Insumos (M&eacute;dicos)</th>
             <td><?php echo $ta31; ?></td>
         </tr>
         <tr>
-            <th>Tres dos</th>
+            <th>Insumos (Otros)</th>
             <td><?php echo $ta32; ?></td>
         </tr>
         <tr>
-            <th>Cuatro uno</th>
+            <th>Inversiones (Edilicias)</th>
             <td><?php echo $ta41; ?></td>
         </tr>
         <tr>
-            <th>Cuatro dos</th>
+            <th>Inversiones (Equip M&eacute;dico)</th>
             <td><?php echo $ta42; ?></td>
         </tr>
         <tr>
-            <th>Cuatro tres</th>
+            <th>Inversiones (Equip No M&eacute;dico)</th>
             <td><?php echo $ta43; ?></td>
         </tr>
         <tr>
-            <th>Cinco uno</th>
+            <th>Mantenimiento (Edilicio y Otros)</th>
             <td><?php echo $ta51; ?></td>
         </tr>
         <tr>
-            <th>Cinco dos</th>
+            <th>Mantenimiento (Equipamiento M&eacute;dico)</th>
             <td><?php echo $ta52; ?></td>
         </tr>
         <tr>
-            <th>Cinco tres</th>
+            <th>Mantenimiento (Equipamiento No M&eacute;dico)</th>
             <td><?php echo $ta53; ?></td>
         </tr>
         <tr>
-            <th>Seis uno</th>
+            <th>Capacitaci&oacute;n (M&eacute;dicos)</th>
             <td><?php echo $ta61; ?></td>
         </tr>
         <tr>
-            <th>Seis dos</th>
+            <th>Capacitaci&oacute;n (Enfermeros y Ag. Sanitarios)</th>
             <td><?php echo $ta62; ?></td>
         </tr>
         <tr>
-            <th>Seis tres</th>
+            <th>Capacitaci&oacute;n (Administrativos y Otros)</th>
             <td><?php echo $ta63; ?></td>
         </tr>
         <tr>
-            <th>Siete</th>
+            <th>Cesi&oacute;n</th>
             <td><?php echo $ta71; ?></td>
         </tr>
     </tbody>
@@ -730,7 +736,7 @@ $cesion_desdef=number_format($cesion_desde,2, ',', '.');
 
 <?php 
 if ($area <> ""){ $area=" Area = ".$area; }
-if ($CUIE <> ""){ $cuiecompleto=" ".$_POST['scuie']." "; }
+if ($CUIE <> ""){ $cuiecompleto=" ".$_POST['scuie']." "; } else { $cuiecompleto = ""; }
 $titulo=$area.$cuiecompleto." periodo desde ".$_POST['tperiododesde']." hasta ".$_POST['tperiodohasta'];
 
 ?>
