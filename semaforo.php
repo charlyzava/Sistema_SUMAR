@@ -32,7 +32,7 @@ if ($mes<>''){
  }
 $ordenado="";
 if (isset($_POST['cuie'])){
-	$ordenado=" ORDER BY CUIE ";
+	$ordenado=" ORDER BY TABLA2.CUIE ";
 }
 if (isset($_POST['nombre'])){
 	$ordenado=" ORDER BY NOMBREEFECTOR ";
