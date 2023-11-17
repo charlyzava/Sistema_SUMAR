@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 
-<link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+<link rel="icon" type="image/vnd.microsoft.icon" href="sumar.ico">
 
 <!-- jQuery -->
 <script type="text/javascript" src="smartmenu/libs/jquery/jquery.js"></script>
@@ -96,6 +96,7 @@
          <li><a href="#">Reportes</a>
         			<ul>
         				<li><a href="reporte_ordenesdepago.php">Notificaciones Ordenes de Pago</a></li>
+                        <li><a href="reporte_cierresmensuales.php">Cierres Mensuales</a></li>
       				</ul>
         
         </li>
@@ -214,8 +215,6 @@
     </tr>
     <?php
     	$query_mensajes=" select * FROM SUMAR.dbo.MENSAJES";
-	
-	//echo $query2;
 	
 	$res=sqlsrv_query($conn,$query_mensajes);
 	if (isset($res)){
