@@ -1,38 +1,8 @@
 <?php include ('\conexion.php');
 //Header('Content-Type: text/html; charset=LATIN1');
 ////////////
-/*//Consulta Ariel con todas las columnas - No lo usé al final
-/*select T1.NroCuenta, T1.TERCERADMINISTRADOR, T1.TOTALGRAL, T2.TOTALGRAL AS PAGADO, T3.TOTALGRAL AS SALDO 
-FROM
-(SELECT         SUM(dbo.ORDENPAGO.TOTAL - COALESCE (dbo.ORDENPAGO.DEBITO, 0) + COALESCE (dbo.ORDENPAGO.CREDITO, 0)) AS TOTALGRAL, 
-                         dbo.ORDENPAGO.[NROCtaTran Para] as NroCuenta, dbo.EFECTORES.TERCERADMINISTRADOR
-FROM            dbo.EXPEDIENTES INNER JOIN
-                         dbo.EFECTORES ON dbo.EXPEDIENTES.CUIE = dbo.EFECTORES.CUIE INNER JOIN
-                         dbo.ORDENPAGO ON dbo.EXPEDIENTES.NROEXPEDIENTE = dbo.ORDENPAGO.NROEXPEDIENTE AND 
-                         dbo.EXPEDIENTES.ANIOEXP = dbo.ORDENPAGO.ANIOEXP AND dbo.EXPEDIENTES.NROFACTURA = dbo.ORDENPAGO.NROFACTURA AND 
-                         dbo.EXPEDIENTES.FECHAFACTURA = dbo.ORDENPAGO.FECHAFACTURA AND dbo.EXPEDIENTES.PERIODO = dbo.ORDENPAGO.PERIODO
-WHERE        (dbo.ORDENPAGO.FECHAORDENPAGO = '10/02/2023')
-GROUP BY dbo.ORDENPAGO.[NROCtaTran Para], dbo.EFECTORES.TERCERADMINISTRADOR) T1
-FULL OUTER JOIN 
-(SELECT         SUM(dbo.ORDENPAGO.TOTAL - COALESCE (dbo.ORDENPAGO.DEBITO, 0) + COALESCE (dbo.ORDENPAGO.CREDITO, 0)) AS TOTALGRAL, 
-                         dbo.ORDENPAGO.[NROCtaTran Para] as NroCuenta, dbo.EFECTORES.TERCERADMINISTRADOR
-FROM            dbo.EXPEDIENTES INNER JOIN
-                         dbo.EFECTORES ON dbo.EXPEDIENTES.CUIE = dbo.EFECTORES.CUIE INNER JOIN
-                         dbo.ORDENPAGO ON dbo.EXPEDIENTES.NROEXPEDIENTE = dbo.ORDENPAGO.NROEXPEDIENTE AND 
-                         dbo.EXPEDIENTES.ANIOEXP = dbo.ORDENPAGO.ANIOEXP AND dbo.EXPEDIENTES.NROFACTURA = dbo.ORDENPAGO.NROFACTURA AND 
-                         dbo.EXPEDIENTES.FECHAFACTURA = dbo.ORDENPAGO.FECHAFACTURA AND dbo.EXPEDIENTES.PERIODO = dbo.ORDENPAGO.PERIODO
-WHERE        (dbo.ORDENPAGO.FECHAORDENPAGO = '10/02/2023') and dbo.ORDENPAGO.FECHANOTIFICACION is not null
-GROUP BY dbo.ORDENPAGO.[NROCtaTran Para], dbo.EFECTORES.TERCERADMINISTRADOR) T2 ON T1.NroCuenta=T2.NroCuenta
-FULL OUTER JOIN 
-(SELECT         SUM(dbo.ORDENPAGO.TOTAL - COALESCE (dbo.ORDENPAGO.DEBITO, 0) + COALESCE (dbo.ORDENPAGO.CREDITO, 0)) AS TOTALGRAL, 
-                         dbo.ORDENPAGO.[NROCtaTran Para] as NroCuenta, dbo.EFECTORES.TERCERADMINISTRADOR
-FROM            dbo.EXPEDIENTES INNER JOIN
-                         dbo.EFECTORES ON dbo.EXPEDIENTES.CUIE = dbo.EFECTORES.CUIE INNER JOIN
-                         dbo.ORDENPAGO ON dbo.EXPEDIENTES.NROEXPEDIENTE = dbo.ORDENPAGO.NROEXPEDIENTE AND 
-                         dbo.EXPEDIENTES.ANIOEXP = dbo.ORDENPAGO.ANIOEXP AND dbo.EXPEDIENTES.NROFACTURA = dbo.ORDENPAGO.NROFACTURA AND 
-                         dbo.EXPEDIENTES.FECHAFACTURA = dbo.ORDENPAGO.FECHAFACTURA AND dbo.EXPEDIENTES.PERIODO = dbo.ORDENPAGO.PERIODO
-WHERE        (dbo.ORDENPAGO.FECHAORDENPAGO = '10/02/2023') and dbo.ORDENPAGO.FECHANOTIFICACION is null
-GROUP BY dbo.ORDENPAGO.[NROCtaTran Para], dbo.EFECTORES.TERCERADMINISTRADOR) T3 ON T1.NroCuenta=T3.NroCuenta*/
+date_default_timezone_set("America/Caracas");	
+setlocale(LC_ALL,"es_ES");
 
 $parametros='';
 $consulta='';
@@ -84,8 +54,14 @@ ORDER BY FECHAORDENPAGO DESC");
 
   	while($row_todos=sqlsrv_fetch_array($restodos))
 	{	
+	
+	//$fecha = date('Y-m-d', strtotime('-1 month', $row_todos['FECHAORDENPAGO']->format('Y-m-d')));
+	
+	$fecha = new DateTime( $row_todos['FECHAORDENPAGO']->format('Y-m-d') );
+$fecha->modify( 'first day of -1 month' );
+//echo $d->format('Y-m-d');
 		?>
-        <option value="<?php echo $row_todos['FECHAORDENPAGO']->format('d-m-Y'); ?>"><?php echo $row_todos['FECHAORDENPAGO']->format('d-m-Y'); ?></option>
+        <option value="<?php echo $row_todos['FECHAORDENPAGO']->format('d-m-Y'); ?>"   <?php if (isset($_POST['todosfecha'])){ if ($_POST['todosfecha']==$row_todos['FECHAORDENPAGO']->format('d-m-Y')){ echo "Selected=\"selected\""; } } ?>  ><?php echo $row_todos['FECHAORDENPAGO']->format('d-m-Y')." - ".$fecha->format('F-Y')      ; ?></option>
         <?php } ; ?>
       </select></td>
 </tr>
@@ -115,106 +91,81 @@ ORDER BY FECHAORDENPAGO DESC");
   </tr>
   <?php
   
+  
+  $t_total_gral=0;
+  $t_pagado=0;
+  $t_saldo=0;
+  
+  
 	if (isset($_POST['consultar'])){
 		$fechatodos=$_POST['todosfecha'];
-	$consulta=" SELECT DISTINCT(TERCERADMINISTRADOR) FROM EFECTORES WHERE TERCERADMINISTRADOR <> '' ORDER BY TERCERADMINISTRADOR ";
+	$consulta=" select T1.NroCuenta, T1.TERCERADMINISTRADOR, T1.TOTALGRAL, T2.TOTALGRAL AS PAGADO, T3.TOTALGRAL AS SALDO 
+FROM
+(SELECT         SUM(dbo.ORDENPAGO.TOTAL - COALESCE (dbo.ORDENPAGO.DEBITO, 0) + COALESCE (dbo.ORDENPAGO.CREDITO, 0)) AS TOTALGRAL, 
+                         dbo.ORDENPAGO.[NROCtaTran Para] as NroCuenta, dbo.EFECTORES.TERCERADMINISTRADOR
+FROM            dbo.EXPEDIENTES INNER JOIN
+                         dbo.EFECTORES ON dbo.EXPEDIENTES.CUIE = dbo.EFECTORES.CUIE INNER JOIN
+                         dbo.ORDENPAGO ON dbo.EXPEDIENTES.NROEXPEDIENTE = dbo.ORDENPAGO.NROEXPEDIENTE AND 
+                         dbo.EXPEDIENTES.ANIOEXP = dbo.ORDENPAGO.ANIOEXP AND dbo.EXPEDIENTES.NROFACTURA = dbo.ORDENPAGO.NROFACTURA AND 
+                         dbo.EXPEDIENTES.FECHAFACTURA = dbo.ORDENPAGO.FECHAFACTURA AND dbo.EXPEDIENTES.PERIODO = dbo.ORDENPAGO.PERIODO
+WHERE        (dbo.ORDENPAGO.FECHAORDENPAGO = '$fechatodos')
+GROUP BY dbo.ORDENPAGO.[NROCtaTran Para], dbo.EFECTORES.TERCERADMINISTRADOR) T1
+FULL OUTER JOIN 
+(SELECT         SUM(dbo.ORDENPAGO.TOTAL - COALESCE (dbo.ORDENPAGO.DEBITO, 0) + COALESCE (dbo.ORDENPAGO.CREDITO, 0)) AS TOTALGRAL, 
+                         dbo.ORDENPAGO.[NROCtaTran Para] as NroCuenta, dbo.EFECTORES.TERCERADMINISTRADOR
+FROM            dbo.EXPEDIENTES INNER JOIN
+                         dbo.EFECTORES ON dbo.EXPEDIENTES.CUIE = dbo.EFECTORES.CUIE INNER JOIN
+                         dbo.ORDENPAGO ON dbo.EXPEDIENTES.NROEXPEDIENTE = dbo.ORDENPAGO.NROEXPEDIENTE AND 
+                         dbo.EXPEDIENTES.ANIOEXP = dbo.ORDENPAGO.ANIOEXP AND dbo.EXPEDIENTES.NROFACTURA = dbo.ORDENPAGO.NROFACTURA AND 
+                         dbo.EXPEDIENTES.FECHAFACTURA = dbo.ORDENPAGO.FECHAFACTURA AND dbo.EXPEDIENTES.PERIODO = dbo.ORDENPAGO.PERIODO
+WHERE        (dbo.ORDENPAGO.FECHAORDENPAGO = '$fechatodos') and dbo.ORDENPAGO.FECHANOTIFICACION is not null
+GROUP BY dbo.ORDENPAGO.[NROCtaTran Para], dbo.EFECTORES.TERCERADMINISTRADOR) T2 ON T1.NroCuenta=T2.NroCuenta
+FULL OUTER JOIN 
+(SELECT         SUM(dbo.ORDENPAGO.TOTAL - COALESCE (dbo.ORDENPAGO.DEBITO, 0) + COALESCE (dbo.ORDENPAGO.CREDITO, 0)) AS TOTALGRAL, 
+                         dbo.ORDENPAGO.[NROCtaTran Para] as NroCuenta, dbo.EFECTORES.TERCERADMINISTRADOR
+FROM            dbo.EXPEDIENTES INNER JOIN
+                         dbo.EFECTORES ON dbo.EXPEDIENTES.CUIE = dbo.EFECTORES.CUIE INNER JOIN
+                         dbo.ORDENPAGO ON dbo.EXPEDIENTES.NROEXPEDIENTE = dbo.ORDENPAGO.NROEXPEDIENTE AND 
+                         dbo.EXPEDIENTES.ANIOEXP = dbo.ORDENPAGO.ANIOEXP AND dbo.EXPEDIENTES.NROFACTURA = dbo.ORDENPAGO.NROFACTURA AND 
+                         dbo.EXPEDIENTES.FECHAFACTURA = dbo.ORDENPAGO.FECHAFACTURA AND dbo.EXPEDIENTES.PERIODO = dbo.ORDENPAGO.PERIODO
+WHERE        (dbo.ORDENPAGO.FECHAORDENPAGO = '$fechatodos') and dbo.ORDENPAGO.FECHANOTIFICACION is null
+GROUP BY dbo.ORDENPAGO.[NROCtaTran Para], dbo.EFECTORES.TERCERADMINISTRADOR) T3 ON T1.NroCuenta=T3.NroCuenta ";
 	$result=sqlsrv_query($conn,$consulta);	
-	}
-  
-
-$total=0;
-$debito=0;
-$subtotal=0;
-
-
-$sumasubtotal=0;
-$sumadebito=0;
-$sumacredito=0;
-
-// VER AQUÍ RESULT = QUE ARRIBA
-$result=sqlsrv_query($conn,$consulta);
-	if (isset($_POST['consultar'])){
-			$totalfinal=0;	
   while($row=sqlsrv_fetch_array($result))
 	{	
 	
-	$nulo="0";
-	$no_nulo="0";
-	$nro_cuenta="";
-	$total="0";
+	$nro_cuenta = $row["NroCuenta"];
+	$tercer_administrador = $row["TERCERADMINISTRADOR"];
+	$total_gral = $row["TOTALGRAL"];
+	$pagado = $row["PAGADO"];
+	$saldo = $row["SALDO"];
 	
-	
-	$tercer_administrador = $row['TERCERADMINISTRADOR'];
-	$nro_cuenta = "";
-	
-	
-	$cons_nulo = "SELECT SUM(dbo.ORDENPAGO.TOTAL - COALESCE (dbo.ORDENPAGO.DEBITO, 0)) AS TOTALGRAL, 
-                         dbo.ORDENPAGO.[NROCtaTran Para] AS NRO_CUENTA, dbo.EFECTORES.TERCERADMINISTRADOR
-FROM            dbo.EXPEDIENTES INNER JOIN
-                         dbo.EFECTORES ON dbo.EXPEDIENTES.CUIE = dbo.EFECTORES.CUIE INNER JOIN
-                         dbo.ORDENPAGO ON dbo.EXPEDIENTES.NROEXPEDIENTE = dbo.ORDENPAGO.NROEXPEDIENTE AND 
-                         dbo.EXPEDIENTES.ANIOEXP = dbo.ORDENPAGO.ANIOEXP AND dbo.EXPEDIENTES.NROFACTURA = dbo.ORDENPAGO.NROFACTURA AND 
-                         dbo.EXPEDIENTES.FECHAFACTURA = dbo.ORDENPAGO.FECHAFACTURA AND dbo.EXPEDIENTES.PERIODO = dbo.ORDENPAGO.PERIODO
-WHERE        (dbo.ORDENPAGO.FECHAORDENPAGO = '$fechatodos') AND dbo.ORDENPAGO.FECHANOTIFICACION IS NULL AND TERCERADMINISTRADOR = '$tercer_administrador'
-GROUP BY dbo.ORDENPAGO.[NROCtaTran Para], dbo.EFECTORES.TERCERADMINISTRADOR";
-	$res_nulo = sqlsrv_query($conn,$cons_nulo);
-	while($row_nulo=sqlsrv_fetch_array($res_nulo)){ 
-		$nulo = $row_nulo['TOTALGRAL'];
-		$nro_cuenta = $row_nulo['NRO_CUENTA']; }
-	$cons_no_nulo = "SELECT SUM(dbo.ORDENPAGO.TOTAL - COALESCE (dbo.ORDENPAGO.DEBITO, 0)) AS TOTALGRAL, 
-                         dbo.ORDENPAGO.[NROCtaTran Para] AS NRO_CUENTA, dbo.EFECTORES.TERCERADMINISTRADOR
-FROM            dbo.EXPEDIENTES INNER JOIN
-                         dbo.EFECTORES ON dbo.EXPEDIENTES.CUIE = dbo.EFECTORES.CUIE INNER JOIN
-                         dbo.ORDENPAGO ON dbo.EXPEDIENTES.NROEXPEDIENTE = dbo.ORDENPAGO.NROEXPEDIENTE AND 
-                         dbo.EXPEDIENTES.ANIOEXP = dbo.ORDENPAGO.ANIOEXP AND dbo.EXPEDIENTES.NROFACTURA = dbo.ORDENPAGO.NROFACTURA AND 
-                         dbo.EXPEDIENTES.FECHAFACTURA = dbo.ORDENPAGO.FECHAFACTURA AND dbo.EXPEDIENTES.PERIODO = dbo.ORDENPAGO.PERIODO
-WHERE        (dbo.ORDENPAGO.FECHAORDENPAGO = '$fechatodos') AND dbo.ORDENPAGO.FECHANOTIFICACION IS NOT NULL AND TERCERADMINISTRADOR = '$tercer_administrador'
-GROUP BY dbo.ORDENPAGO.[NROCtaTran Para], dbo.EFECTORES.TERCERADMINISTRADOR";
-	$res_no_nulo = sqlsrv_query($conn, $cons_no_nulo);
-	while($row_no_nulo=sqlsrv_fetch_array($res_no_nulo)){ 
-			$no_nulo = $row_no_nulo['TOTALGRAL']; 
-			$nro_cuenta = $row_no_nulo['NRO_CUENTA'];}
-	
-	
-	
-	$cons_total= "SELECT SUM(dbo.ORDENPAGO.TOTAL - COALESCE (dbo.ORDENPAGO.DEBITO, 0)) AS TOTALGRAL, 
-                         dbo.ORDENPAGO.[NROCtaTran Para] AS NRO_CUENTA, dbo.EFECTORES.TERCERADMINISTRADOR
-FROM            dbo.EXPEDIENTES INNER JOIN
-                         dbo.EFECTORES ON dbo.EXPEDIENTES.CUIE = dbo.EFECTORES.CUIE INNER JOIN
-                         dbo.ORDENPAGO ON dbo.EXPEDIENTES.NROEXPEDIENTE = dbo.ORDENPAGO.NROEXPEDIENTE AND 
-                         dbo.EXPEDIENTES.ANIOEXP = dbo.ORDENPAGO.ANIOEXP AND dbo.EXPEDIENTES.NROFACTURA = dbo.ORDENPAGO.NROFACTURA AND 
-                         dbo.EXPEDIENTES.FECHAFACTURA = dbo.ORDENPAGO.FECHAFACTURA AND dbo.EXPEDIENTES.PERIODO = dbo.ORDENPAGO.PERIODO
-WHERE        (dbo.ORDENPAGO.FECHAORDENPAGO = '$fechatodos') AND TERCERADMINISTRADOR = '$tercer_administrador'
-GROUP BY dbo.ORDENPAGO.[NROCtaTran Para], dbo.EFECTORES.TERCERADMINISTRADOR";
-	$res_total = sqlsrv_query($conn, $cons_total);
-	while($row_total=sqlsrv_fetch_array($res_total)){ 
-			$total = $row_total['TOTALGRAL']; 
-			$nro_cuenta = $row_total['NRO_CUENTA'];
-			}
-	
-	
+  $t_total_gral=$t_total_gral+$total_gral;
+  $t_pagado=$t_pagado+$pagado;
+  $t_saldo=$t_saldo+$saldo;
+		
   ?>
   <tr>
   	<td width="15%" align="left"><?php echo $nro_cuenta; ?></td>
-    <td width="32%" align="left"><?php echo utf8_encode($row["TERCERADMINISTRADOR"]); ?></td>
-    <td align="right"><?php echo $total; ?></td>
-    <td align="right"><?php echo $no_nulo; ?></td>
-    <td align="right"><?php echo $nulo; ?></td>
+    <td width="32%" align="left"><?php echo utf8_encode($tercer_administrador); ?></td>
+    <td align="right"><?php echo $total_gral; ?></td>
+    <td align="right"><?php echo $pagado; ?></td>
+    <td align="right"><?php echo $saldo; ?></td>
+    
     
   </tr>
   
-    <?php } ; ?>
+    <?php } ; ?><?php } ?>
   <tr>
     <td>&nbsp;</td>
     <td width="32%">&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr><?php } ?>
+    <td align="right"><?php echo $t_total_gral; ?>&nbsp;</td>
+    <td align="right"><?php echo $t_pagado; ?>&nbsp;</td>
+    <td align="right"><?php echo $t_saldo; ?>&nbsp;</td>
+    
+  </tr>
 </table></center>
 <p><?php /* echo "consulta" .$consulta."<br>"."<br>".$cons_nulo;*/ ?>&nbsp;
-  
-  
 </p>
 <p>&nbsp;</p>
 </body>
