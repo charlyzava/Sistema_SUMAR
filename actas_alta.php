@@ -26,7 +26,7 @@ Header('Content-Type: text/html; charset=LATIN1');
 $responsable="";
 $fentrega="";
 $acta="";
-$anioentrega="";
+$anioentrega="";//
 $estado="";
 $salida='';
 $cuie='';
@@ -34,28 +34,24 @@ $encontro='0';
 $grabado='0';
 $delete='si';
 	if (isset($_POST['tacta'])){ $acta=$_POST['tacta']; }
-	if (isset($_POST['tanio'])){ $anioentrega=$_POST['tanio']; }
+	if (isset($_POST['tanio'])){ $anioentrega=$_POST['tanio']; }//
 	
 
 	
 if (isset($_POST['bmod_sel'])){	
 
-		$conscompleta="SELECT * FROM ACTAS.dbo.ACTAS WHERE nro_acta = '$acta' and anio_acta = '$anioentrega' ";
+		$conscompleta="SELECT * FROM ACTAS.dbo.ACTAS WHERE nro_acta = '$acta' and anio_acta = '$anioentrega' ";//
 		$result=sqlsrv_query($conn,$conscompleta);
 		while ($res=sqlsrv_fetch_array($result)){
-			//$id_acta=$res['id_acta'];
+
 			$fentrega=$res['f_entrega'];
 			$cuie=$res['cuie'];
 			$acta=$res['nro_acta'];
-			$anioentrega=$res['anio_acta'];
+			$anioentrega=$res['anio_acta'];//
 			$responsable=$res['responsable'];
-			$usuario=$res['usuario'];
-		}
-
-
+			//$usuario=$res['usuario']; QUIERO USAR EL USUARIO ACTUAL
+		}// CREO QUE SE PUEDE ELIMINAR 
 	$estado='abierta';
-
-
 
 	if (isset($_POST['rbbien'])){
 		$idbienm=$_POST['rbbien'];
@@ -64,7 +60,7 @@ if (isset($_POST['bmod_sel'])){
 		$invbienm=$_POST["inv".$idbienm];
 		
 			$fechacreacion=date('Y-m-d');
-	$horacreacion=date('H:i:s');
+			$horacreacion=date('H:i:s');
 		
 			$mod_seleccionado="UPDATE ACTAS.dbo.ACTAS_BIENES SET descripcion='$desbienm', importe = '$impbienm', inventario = '$invbienm', usuario='$usuario', fecha_creacion ='$fechacreacion', hora_creacion = '$horacreacion', ip='$ip' WHERE id_bien = '$idbienm' ";
 			$sql_mod_seleccionado=sqlsrv_query($conn,$mod_seleccionado);
@@ -73,30 +69,30 @@ if (isset($_POST['bmod_sel'])){
 		$salida="Debe seleccionar el registro para modificar";
 	}
 }
+
+
 if (isset($_POST['abrir_factura'])){
-	if (($acta=='')or($anioentrega=='')){
+	if (($acta=='')or($anioentrega=='')){//
 		$salida='No se puede cerrar factura si no tiene Acta y Anio de Entrega';
 		} else {
 			
-			
-			
 			//procedimiento consulta para mostrar
-				$conscompleta="SELECT * FROM ACTAS.dbo.ACTAS WHERE nro_acta = '$acta' and anio_acta = '$anioentrega' ";
+				$conscompleta="SELECT * FROM ACTAS.dbo.ACTAS WHERE nro_acta = '$acta' and anio_acta = '$anioentrega' ";//
 		$result=sqlsrv_query($conn,$conscompleta);
-		while ($res=sqlsrv_fetch_array($result)){
-			//$id_acta=$res['id_acta'];			
+		while ($res=sqlsrv_fetch_array($result)){		
 			$fentrega=$res['f_entrega'];
 			$cuie=$res['cuie'];
 			$acta=$res['nro_acta'];
-			$anioentrega=$res['anio_acta'];
+			$anioentrega=$res['anio_acta'];//
 			$responsable=$res['responsable'];
-			$usuario=$res['usuario'];
+
 		}
 	
 	$estado='abierta';
 // fin procedimiento abrir factura			
-			
-			$abrir_factura="UPDATE ACTAS.dbo.ACTAS SET estado='' WHERE nro_acta= $acta and anio_acta = $anioentrega";
+			$fechacreacion=date('Y-m-d');
+			$horacreacion=date('H:i:s');
+			$abrir_factura="UPDATE ACTAS.dbo.ACTAS SET estado='', usuario='$usuario', fecha_creacion ='$fechacreacion', hora_creacion = '$horacreacion', ip='$ip' WHERE nro_acta= $acta and anio_acta = $anioentrega";//
 			$sql_abrir_factura=sqlsrv_query($conn,$abrir_factura);
 			$salida='Factura abierta';
 			// agregue ahora
@@ -108,7 +104,7 @@ if (isset($_POST['abrir_factura'])){
 if (isset($_POST['bcerrarf'])){
 	$cont=0;
 	
-	if (($acta=='')or($anioentrega=='')){
+	if (($acta=='')or($anioentrega=='')){//
 		$salida='Complete Acta y Anio de Entrega';
 		} else {
 	
@@ -118,14 +114,13 @@ if (isset($_POST['bcerrarf'])){
 	$fdesde=$fdesde[2]."-".$fdesde[1]."-".$fdesde[0];
 	}
 
-$conscompleta="SELECT * FROM ACTAS.dbo.ACTAS WHERE nro_acta = '$acta' and anio_acta = '$anioentrega' ";
+$conscompleta="SELECT * FROM ACTAS.dbo.ACTAS WHERE nro_acta = '$acta' and anio_acta = '$anioentrega' ";//
 		$result=sqlsrv_query($conn,$conscompleta);
-		while ($res=sqlsrv_fetch_array($result)){
-			//$id_acta=$res['id_acta'];			
+		while ($res=sqlsrv_fetch_array($result)){		
 			$fentrega=$res['f_entrega'];
 			$cuie=$res['cuie'];
 			$acta=$res['nro_acta'];
-			$anioentrega=$res['anio_acta'];
+			$anioentrega=$res['anio_acta'];//
 			$responsable=$res['responsable'];
 			$usuario=$res['usuario'];
 			$estado=$res['estado'];
@@ -153,17 +148,17 @@ if (isset($_POST['eliminar'])){
 	$delete='si';
 	$estado="abierta";
 	
-	$conscompleta="SELECT * FROM ACTAS.dbo.ACTAS WHERE nro_acta = '$acta' and anio_acta = '$anioentrega' ";
+	$conscompleta="SELECT * FROM ACTAS.dbo.ACTAS WHERE nro_acta = '$acta' and anio_acta = '$anioentrega' ";//
 		$result=sqlsrv_query($conn,$conscompleta);
 		while ($res=sqlsrv_fetch_array($result)){
 			$id_acta=$res['id_acta'];			
 			$fentrega=$res['f_entrega'];
 			$cuie=$res['cuie'];
 			$acta=$res['nro_acta'];
-			$anioentrega=$res['anio_acta'];
+			$anioentrega=$res['anio_acta'];//
 			$responsable=$res['responsable'];
 			$usuario=$res['usuario'];
-		}
+		} //CREO QUE NO HACE FALTA
 		
 	if (isset($_POST['rbbien'])){
 	$deletebien=$_POST['rbbien'];	
@@ -187,7 +182,6 @@ if (isset($_POST['agregar'])){
 			$acta=$res['nro_acta'];
 			$anioentrega=$res['anio_acta'];
 			$responsable=$res['responsable'];
-			$usuario=$res['usuario'];
 		}
 	
 	
@@ -203,7 +197,7 @@ if (isset($_POST['agregar'])){
 	$inventario=$_POST['tinventario'];
 	$expte=$_POST['texpte'];
 	$anioexpte=$_POST['texpteanio'];
-	$cantidad=$_POST['tcantidad']; // SI ES MÁS DE UNO DEFINIR SI SE GRABA EL NRO DE SERIE
+	$cantidad=$_POST['tcantidad']; // SI ES MÃS DE UNO DEFINIR SI SE GRABA EL NRO DE SERIE
 	$descripcion=$_POST['tdescripcion'];
 	$importe=$_POST['timporte'];
 	$nserie=$_POST['tnserie'];
@@ -223,14 +217,8 @@ if (isset($_POST['agregar'])){
 if (isset($_POST['grabar'])){
 	
 	$errorgrabar=false;
-
 	$fentrega=$_POST['from'];
-
 	$responsable=$_POST['tresponsable'];
-	
-
-	
-
 
 	$CUIE="";
 
@@ -252,10 +240,6 @@ if (isset($_POST['grabar'])){
 		$errorgrabar=true; } 
 
 		// aqui validar CUIE	
-
-			//AGREGAR FECHA HORA CREACION
-
-		
 	
 	$cons_acta="SELECT count(*) as contador FROM ACTAS.dbo.ACTAS WHERE nro_acta = '$acta' and anio_acta = '$anioentrega'";
 	$result=sqlsrv_query($conn,$cons_acta);
@@ -266,8 +250,6 @@ if (isset($_POST['grabar'])){
 			$salida="Error, ya existe el Numero de Acta y el Anio"; 
 			$errorgrabar=true;
 	} 	
-
-	
 
 	if ($errorgrabar==false){
 
@@ -287,7 +269,6 @@ if ($result){
 		}
 		
 }
-
 
 //------------ BUSCAR ------------------
 
@@ -364,35 +345,35 @@ $conscompleta="SELECT * FROM ACTAS.dbo.ACTAS WHERE nro_acta = '$acta' and anio_a
 
 function enviarDatos(){
  
- 		c = confirm('�Confirma Cerrar el Acta?');
+ 		c = confirm('¿Confirma Cerrar el Acta?');
 	if (c) {
  
 		//form1: nombre del formulario
 		//tacta,tanio: edits con los valores
  		acta = document.form1.tacta.value;
 		anio_acta = document.form1.tanio.value;
-         //AquÃ­ serÃ¡ donde se mostrarÃ¡ el resultado
+         //AquÃƒÂ­ serÃƒÂ¡ donde se mostrarÃƒÂ¡ el resultado
 		jugador = document.getElementById('jugador');
  
 		//instanciamos el objetoAjax
 		ajax = objetoAjax();
  
-		//Abrimos una conexiÃ³n AJAX pasando como parÃ¡metros el mÃ©todo de envÃ­o, y el archivo que realizarÃ¡ las operaciones deseadas
+		//Abrimos una conexiÃƒÂ³n AJAX pasando como parÃƒÂ¡metros el mÃƒÂ©todo de envÃƒÂ­o, y el archivo que realizarÃƒÂ¡ las operaciones deseadas
 		ajax.open("POST", "actas_cierrafactura.php", true);
  
-		//cuando el objeto XMLHttpRequest cambia de estado, la funciÃ³n se inicia
+		//cuando el objeto XMLHttpRequest cambia de estado, la funciÃƒÂ³n se inicia
 		ajax.onreadystatechange = function() {
  
-             //Cuando se completa la peticiÃ³n, mostrarÃ¡ los resultados 
+             //Cuando se completa la peticiÃƒÂ³n, mostrarÃƒÂ¡ los resultados 
 			if (ajax.readyState == 4){
  
-				//El mÃ©todo responseText() contiene el texto de nuestro 'consultar.php'. Por ejemplo, cualquier texto que mostremos por un 'echo'
+				//El mÃƒÂ©todo responseText() contiene el texto de nuestro 'consultar.php'. Por ejemplo, cualquier texto que mostremos por un 'echo'
 				jugador.value = (ajax.responseText) 
 				salida.value = (ajax.responseText)
 			}
 		} 
  
-		//Llamamos al mÃ©todo setRequestHeader indicando que los datos a enviarse estÃ¡n codificados como un formulario. 
+		//Llamamos al mÃƒÂ©todo setRequestHeader indicando que los datos a enviarse estÃƒÂ¡n codificados como un formulario. 
 		ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded"); 
  
 		//enviamos las variables a 'consulta.php' 
@@ -409,35 +390,35 @@ function enviarDatos(){
 
 function eliminarActa(){
  
- 		c = confirm('�Confirma Eliminar el Acta? Se registrar� esta acci�n con su usuario');
+ 		c = confirm('�Confirma Eliminar el Acta? Se registrara esta accion con su usuario');
 	if (c) {
  
 		//form1: nombre del formulario
 		//tacta,tanio: edits con los valores
  		acta = document.form1.tacta.value;
 		anio_acta = document.form1.tanio.value;
-         //AquÃ­ serÃ¡ donde se mostrarÃ¡ el resultado
+         //AquÃƒÂ­ serÃƒÂ¡ donde se mostrarÃƒÂ¡ el resultado
 		jugador = document.getElementById('jugador');
  
 		//instanciamos el objetoAjax
 		ajax = objetoAjax();
  
-		//Abrimos una conexiÃ³n AJAX pasando como parÃ¡metros el mÃ©todo de envÃ­o, y el archivo que realizarÃ¡ las operaciones deseadas
+		//Abrimos una conexiÃƒÂ³n AJAX pasando como parÃƒÂ¡metros el mÃƒÂ©todo de envÃƒÂ­o, y el archivo que realizarÃƒÂ¡ las operaciones deseadas
 		ajax.open("POST", "actas_elimina.php", true);
  
-		//cuando el objeto XMLHttpRequest cambia de estado, la funciÃ³n se inicia
+		//cuando el objeto XMLHttpRequest cambia de estado, la funciÃƒÂ³n se inicia
 		ajax.onreadystatechange = function() {
  
-             //Cuando se completa la peticiÃ³n, mostrarÃ¡ los resultados 
+             //Cuando se completa la peticiÃƒÂ³n, mostrarÃƒÂ¡ los resultados 
 			if (ajax.readyState == 4){
  
-				//El mÃ©todo responseText() contiene el texto de nuestro 'consultar.php'. Por ejemplo, cualquier texto que mostremos por un 'echo'
+				//El mÃƒÂ©todo responseText() contiene el texto de nuestro 'consultar.php'. Por ejemplo, cualquier texto que mostremos por un 'echo'
 				jugador.value = (ajax.responseText) 
 				salida.value = (ajax.responseText)
 			}
 		} 
  
-		//Llamamos al mÃ©todo setRequestHeader indicando que los datos a enviarse estÃ¡n codificados como un formulario. 
+		//Llamamos al mÃƒÂ©todo setRequestHeader indicando que los datos a enviarse estÃƒÂ¡n codificados como un formulario. 
 		ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded"); 
  
 		//enviamos las variables a 'consulta.php' 
@@ -465,7 +446,7 @@ select#combobox {
 body {
 	background-color: #D6D6D6;
 }
-CÃƒÆ’fÃƒâ€ 'ÃƒÆ’,Ãƒâ€šÃ‚Â³digo: Seleccionar todo 
+CÃƒÆ’Ã†â€™fÃƒÆ’Ã¢â‚¬Â 'ÃƒÆ’Ã†â€™,ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³digo: Seleccionar todo 
 .input, .button{ 
 margin: 1px; 
 padding:2px; 
@@ -518,7 +499,7 @@ font-family: 'Lucida Grande', Tahoma, Arial, Verdana, sans-serif;
   <tr>
       <td>Acta / Anio</td>
       <td><label for="tacta"></label>
-        <input name="tacta" type="number" id="tacta" value="<?php if (isset($_POST['tacta'])){ echo $_POST['tacta']; }?>" size="5" min="0" max="2000">
+        <input name="tacta" type="number" id="tacta" value="<?php if (isset($_POST['tacta'])){ echo $_POST['tacta']; }?>" size="5" min="0" max="99000">
         /
         <label for="tanio"></label>
         <input name="tanio" type="number" id="tanio" value="<?php if (isset($_POST['tanio'])){ echo $_POST['tanio']; }?>" min="2000" max="2030">
@@ -602,7 +583,7 @@ font-family: 'Lucida Grande', Tahoma, Arial, Verdana, sans-serif;
             <td><label for=" &quot;imp&quot;.$num ; ?&gt;"></label>
             <input name="tdescripcion" type="text" id="textfield7" value="<?php if(isset($_POST['agregar'])){ echo $_POST['tdescripcion']; } ?>" size="40" maxlength="200"></td>
             <td><label for="textfield10"></label>
-              <input name="timporte" type="number" id="textfield10" value="<?php if (isset($_POST['agregar'])){$_POST['timporte']; }?>" min="0" step=".01"></td>
+              <input name="timporte" type="number" id="textfield10" value="0<?php //if (isset($_POST['agregar'])){$_POST['timporte']; } else { "0"; } ?>" min="0" step=".01"></td>
             <td><label for="textfield11"></label>
               <input name="tnserie" type="text" id="textfield11" value="<?php if (isset($_POST['agregar'])){ echo $_POST['tnserie']; }?>" size="10" maxlength="50"></td>
           </tr>
@@ -653,7 +634,7 @@ if ($estado<>"inexistente"){ ?>
   <?php } ?>
 </form>
 <p>
-  <?php //echo $salida."<br>"; ?>
+  <?php echo $salida."<br>"; ?>
 </p>
 </body>
 </html>

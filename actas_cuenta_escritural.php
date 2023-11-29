@@ -175,7 +175,6 @@ $ordenes_capitado=number_format($ordenes_capitado1,2, ',', '.');
 
 //*/*/*/*/*/ 	FIN ORDENES DE PAGO Capitado   */*/*/*/*/*/**/*//*
 
-
 //================================= ORDENES FONES ===============================//
 
 $consulta_orden_fones="select SUM((IMPORTESALACOMUN*DIASSALACOMUN)+(IMPORTEUCISINARM*DIASUCISINARM)+(IMPORTEUCICONARM*DIASUCICONARM)+
@@ -210,7 +209,7 @@ $fondo_emergencia="$ ".number_format($fondo_emergencia1,2, ',', '.');
 //====================================== BECADOS ==============================================//
 
 //FJSDFJSLDKFJSDLKFJSLDKJ /*/*/*///*/$%/(&(/&&%&/%/&))
-//MODIFICAR PARA QUE ENTRE EL 2021 U AÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¹Ãƒâ€¦Ã¢â‚¬Å“OS ANTERIORES
+//MODIFICAR PARA QUE ENTRE EL 2021 U ANIOS ANTERIORES
 
 $anios="";
 
@@ -285,7 +284,7 @@ $saldodisponible=number_format($saldo_disponible,2, ',', '.');
 <head>
 <meta charset="LATIN1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>.:: Alta de Actas ::.</title>
+  <title>.:: Cuenta Escritural ::.</title>
   <link rel="stylesheet" href="./lib/1.12.1/jquery-ui.css">
 
   <script type="text/javascript">
@@ -1021,26 +1020,29 @@ $sql_becados="SELECT * FROM BECADOS b LEFT JOIN BECADOS_PAGOS p ON b.dni = p.dni
     <td>Inventario</td>
     <td>Acta/Anio</td>
     <td>Expte/A&ntilde;o</td>
+    <td>Cantidad</td>
     <td>Descripcion</td>
     <td>Importe</td>
+    <td>Total</td>
     <td>N&ordm; Serie</td>
   </tr>
 
 <?php	
 		$total_entrega=0;
-		$sql_bienes="SELECT FECHAORDENCOMPRA f_entrega,
+		$sql_bienes="SELECT CANTIDAD as cantidad, CANTIDAD * PRECIOUNITARIO  total, FECHAORDENCOMPRA f_entrega,
 
  CAST(CANTIDAD AS VARCHAR) + '- ' +  DETALLE descripcion
 
 , '' codigo, '' subcodigo, '' inventario, '' n_serie, CANTIDAD * PRECIOUNITARIO  importe,
-'' nro_expte, '' anio_expte, '' nro_acta, '' anio_acta
+'' nro_expte, '' anio_expte 
  FROM [dbo].[ACTAS_DIRECTOS] a LEFT JOIN ACTAS_DIRECTOS_DETALLE d on a.ID = d.ID_ACTAS_DIRECTOS
 where CUIE = '$cuie'
+
 UNION
 		
-		
-		
-		SELECT f_entrega, descripcion, codigo, subcodigo, inventario, n_serie, importe, nro_expte, anio_expte, a.nro_acta, a.anio_acta FROM ACTAS.dbo.ACTAS a LEFT JOIN ACTAS.dbo.ACTAS_BIENES b on a.nro_acta = b.nro_acta AND a.anio_acta = b.anio_acta WHERE f_entrega <= '$fechalimite' and f_entrega >= '$fechainicio' and a.cuie='$cuie'";
+		SELECT  count(descripcion) as cantidad, importe * count(descripcion) as total,          f_entrega, descripcion, codigo, subcodigo, inventario, n_serie, importe, nro_expte, anio_expte FROM ACTAS.dbo.ACTAS a LEFT JOIN ACTAS.dbo.ACTAS_BIENES b on a.nro_acta = b.nro_acta AND a.anio_acta = b.anio_acta WHERE f_entrega <= '$fechalimite' and f_entrega >= '$fechainicio' and a.cuie='$cuie' 
+		group by codigo, subcodigo, nro_expte, anio_expte, descripcion, importe, f_entrega, inventario, inventario, n_serie, a.nro_acta, a.anio_acta
+		";
 
 		$res_bienes=sqlsrv_query($conn,$sql_bienes);			
 		if (isset($res_bienes)){
@@ -1051,18 +1053,18 @@ UNION
   <td width="80"><?php echo $row["f_entrega"]->format('d-m-Y'); ?></td>
     <td align="left"><label for="select2"><?php echo $row["codigo"]; ?>-<?php echo $row["subcodigo"]; ?></label></td>
     <td align="left"><?php echo $row["inventario"]; ?></td>
-    <td><?php echo $row['nro_acta']; ?>/<?php echo $row['anio_acta']; ?></td>
+    <td><?php /* echo $row['nro_acta'];*/ ?>/<?php /* echo $row['anio_acta'];*/ ?></td>
     <td><?php echo $row['nro_expte']; ?>/<?php echo $row['anio_expte']; ?></td>
+    <td><?php echo $row['cantidad']; ?></td>
     <td><?php //echo $row["FPractica"]->format('d-m-Y'); ?>
     <?php echo $row['descripcion']; ?></td>
     <td align="right"><?php echo number_format($row['importe'],2, ',', '.') ?></td>
+     <td><?php echo number_format($row['total'],2, ',', '.'); ?></td>
     <td><?php echo $row["n_serie"]; ?></td>
   </tr>
   <?php } ; }; ?>
 </table>
 </div>
-<?php
-?>
   <label for="tinventario">
   </label>
 <table width="350" border="1" align="center">

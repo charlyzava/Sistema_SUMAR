@@ -10,9 +10,9 @@ $sql_cerrarf="UPDATE ACTAS.dbo.ACTAS SET estado='cerrada' WHERE nro_acta='$acta'
 		$res_cerrarf=sqlsrv_query($conn,$sql_cerrarf);
 
  if ($res_cerrarf){
-echo "Factura cerrada";
+echo "Acta Cerrada";
  } else {
-echo "Error: no se cerró la factura";
+echo "Error: no se cerró el Acta";
  }
 
 ?>
