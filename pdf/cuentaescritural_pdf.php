@@ -217,7 +217,7 @@ $altura=152;
 $pdf->SetFont('helvetica', 'B', 8);
 $pdf->MultiCell(100, 5, "F Entrega", 0, 'L', 1, 0, '17' ,$altura, true);
 $pdf->MultiCell(100, 5, "Acta", 0, 'L', 1, 0, '33' ,$altura, true);
-$pdf->MultiCell(100, 5, "Cant", 0, 'L', 1, 0, '56' ,$altura, true);
+$pdf->MultiCell(100, 5, "Cant", 0, 'L', 1, 0, '50' ,$altura, true);
 $pdf->MultiCell(100, 5, "Descripcion", 0, 'L', 1, 0, '64' ,$altura, true);
 $pdf->MultiCell(20, 5, "Importe", 0, 'R', 1, 0, '130' ,$altura, true);
 $pdf->MultiCell(20, 5, "Total", 0, 'R', 1, 0, '170' ,$altura, true);
@@ -255,10 +255,10 @@ WHERE f_entrega <= '$fechalimite' and f_entrega >= '01/01/2021' and a.cuie='$cui
 	$pdf->MultiCell(100, 5, strtoupper($expediente), 0, 'L', 1, 0, '33' ,$altura, true);
 
 	$cantidad=$row['cantidad'];
-	$pdf->MultiCell(100, 5, $cantidad, 0, 'L', 1, 0, '60' ,$altura, true);	
+	$pdf->MultiCell(100, 5, $cantidad, 0, 'L', 1, 0, '50' ,$altura, true);	
 	
 	$descripcion=$row['descripcion'];
-	$pdf->MultiCell(100, 5, utf8_encode(mb_strtoupper($descripcion)), 0, 'L', 1, 0, '64' ,$altura, true);
+	$pdf->MultiCell(100, 5, utf8_encode(mb_strtoupper(substr($descripcion, 0, 37))), 0, 'L', 1, 0, '64' ,$altura, true);
 		$importe=$row['importe'];
 		$fimporte=number_format($importe,2, ',', '.');
 
