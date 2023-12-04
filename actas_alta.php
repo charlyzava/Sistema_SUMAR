@@ -197,7 +197,7 @@ if (isset($_POST['agregar'])){
 	$inventario=$_POST['tinventario'];
 	$expte=$_POST['texpte'];
 	$anioexpte=$_POST['texpteanio'];
-	$cantidad=$_POST['tcantidad']; // SI ES MÃS DE UNO DEFINIR SI SE GRABA EL NRO DE SERIE
+	$cantidad=$_POST['tcantidad']; // SI ES MÃƒÂS DE UNO DEFINIR SI SE GRABA EL NRO DE SERIE
 	$descripcion=$_POST['tdescripcion'];
 	$importe=$_POST['timporte'];
 	$nserie=$_POST['tnserie'];
@@ -345,35 +345,35 @@ $conscompleta="SELECT * FROM ACTAS.dbo.ACTAS WHERE nro_acta = '$acta' and anio_a
 
 function enviarDatos(){
  
- 		c = confirm('¿Confirma Cerrar el Acta?');
+ 		c = confirm('Â¿Confirma Cerrar el Acta?');
 	if (c) {
  
 		//form1: nombre del formulario
 		//tacta,tanio: edits con los valores
  		acta = document.form1.tacta.value;
 		anio_acta = document.form1.tanio.value;
-         //AquÃƒÂ­ serÃƒÂ¡ donde se mostrarÃƒÂ¡ el resultado
+         //AquÃƒÆ’Ã‚Â­ serÃƒÆ’Ã‚Â¡ donde se mostrarÃƒÆ’Ã‚Â¡ el resultado
 		jugador = document.getElementById('jugador');
  
 		//instanciamos el objetoAjax
 		ajax = objetoAjax();
  
-		//Abrimos una conexiÃƒÂ³n AJAX pasando como parÃƒÂ¡metros el mÃƒÂ©todo de envÃƒÂ­o, y el archivo que realizarÃƒÂ¡ las operaciones deseadas
+		//Abrimos una conexiÃƒÆ’Ã‚Â³n AJAX pasando como parÃƒÆ’Ã‚Â¡metros el mÃƒÆ’Ã‚Â©todo de envÃƒÆ’Ã‚Â­o, y el archivo que realizarÃƒÆ’Ã‚Â¡ las operaciones deseadas
 		ajax.open("POST", "actas_cierrafactura.php", true);
  
-		//cuando el objeto XMLHttpRequest cambia de estado, la funciÃƒÂ³n se inicia
+		//cuando el objeto XMLHttpRequest cambia de estado, la funciÃƒÆ’Ã‚Â³n se inicia
 		ajax.onreadystatechange = function() {
  
-             //Cuando se completa la peticiÃƒÂ³n, mostrarÃƒÂ¡ los resultados 
+             //Cuando se completa la peticiÃƒÆ’Ã‚Â³n, mostrarÃƒÆ’Ã‚Â¡ los resultados 
 			if (ajax.readyState == 4){
  
-				//El mÃƒÂ©todo responseText() contiene el texto de nuestro 'consultar.php'. Por ejemplo, cualquier texto que mostremos por un 'echo'
+				//El mÃƒÆ’Ã‚Â©todo responseText() contiene el texto de nuestro 'consultar.php'. Por ejemplo, cualquier texto que mostremos por un 'echo'
 				jugador.value = (ajax.responseText) 
 				salida.value = (ajax.responseText)
 			}
 		} 
  
-		//Llamamos al mÃƒÂ©todo setRequestHeader indicando que los datos a enviarse estÃƒÂ¡n codificados como un formulario. 
+		//Llamamos al mÃƒÆ’Ã‚Â©todo setRequestHeader indicando que los datos a enviarse estÃƒÆ’Ã‚Â¡n codificados como un formulario. 
 		ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded"); 
  
 		//enviamos las variables a 'consulta.php' 
@@ -390,35 +390,35 @@ function enviarDatos(){
 
 function eliminarActa(){
  
- 		c = confirm('�Confirma Eliminar el Acta? Se registrara esta accion con su usuario');
+ 		c = confirm('¿Confirma Eliminar el Acta? Se registrara esta accion con su usuario');
 	if (c) {
  
 		//form1: nombre del formulario
 		//tacta,tanio: edits con los valores
  		acta = document.form1.tacta.value;
 		anio_acta = document.form1.tanio.value;
-         //AquÃƒÂ­ serÃƒÂ¡ donde se mostrarÃƒÂ¡ el resultado
+         //AquÃƒÆ’Ã‚Â­ serÃƒÆ’Ã‚Â¡ donde se mostrarÃƒÆ’Ã‚Â¡ el resultado
 		jugador = document.getElementById('jugador');
  
 		//instanciamos el objetoAjax
 		ajax = objetoAjax();
  
-		//Abrimos una conexiÃƒÂ³n AJAX pasando como parÃƒÂ¡metros el mÃƒÂ©todo de envÃƒÂ­o, y el archivo que realizarÃƒÂ¡ las operaciones deseadas
+		//Abrimos una conexiÃƒÆ’Ã‚Â³n AJAX pasando como parÃƒÆ’Ã‚Â¡metros el mÃƒÆ’Ã‚Â©todo de envÃƒÆ’Ã‚Â­o, y el archivo que realizarÃƒÆ’Ã‚Â¡ las operaciones deseadas
 		ajax.open("POST", "actas_elimina.php", true);
  
-		//cuando el objeto XMLHttpRequest cambia de estado, la funciÃƒÂ³n se inicia
+		//cuando el objeto XMLHttpRequest cambia de estado, la funciÃƒÆ’Ã‚Â³n se inicia
 		ajax.onreadystatechange = function() {
  
-             //Cuando se completa la peticiÃƒÂ³n, mostrarÃƒÂ¡ los resultados 
+             //Cuando se completa la peticiÃƒÆ’Ã‚Â³n, mostrarÃƒÆ’Ã‚Â¡ los resultados 
 			if (ajax.readyState == 4){
  
-				//El mÃƒÂ©todo responseText() contiene el texto de nuestro 'consultar.php'. Por ejemplo, cualquier texto que mostremos por un 'echo'
+				//El mÃƒÆ’Ã‚Â©todo responseText() contiene el texto de nuestro 'consultar.php'. Por ejemplo, cualquier texto que mostremos por un 'echo'
 				jugador.value = (ajax.responseText) 
 				salida.value = (ajax.responseText)
 			}
 		} 
  
-		//Llamamos al mÃƒÂ©todo setRequestHeader indicando que los datos a enviarse estÃƒÂ¡n codificados como un formulario. 
+		//Llamamos al mÃƒÆ’Ã‚Â©todo setRequestHeader indicando que los datos a enviarse estÃƒÆ’Ã‚Â¡n codificados como un formulario. 
 		ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded"); 
  
 		//enviamos las variables a 'consulta.php' 
@@ -446,7 +446,7 @@ select#combobox {
 body {
 	background-color: #D6D6D6;
 }
-CÃƒÆ’Ã†â€™fÃƒÆ’Ã¢â‚¬Â 'ÃƒÆ’Ã†â€™,ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³digo: Seleccionar todo 
+CÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢fÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢,ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³digo: Seleccionar todo 
 .input, .button{ 
 margin: 1px; 
 padding:2px; 
@@ -622,7 +622,7 @@ if ($estado<>"inexistente"){ ?>
     <td align="left"><input name="<?php echo "inv".$row["id_bien"] ; ?>" type="text" id="<?php echo "inv".$row["id_bien"] ; ?>" value="<?php echo $row['inventario']; ?>" size="25" maxlength="20"/></td>
     <td><?php echo $row['nro_expte']; ?>/<?php echo $row['anio_expte']; ?></td>
     <td><input name="<?php echo "des".$row["id_bien"] ; ?>" type="text" id="<?php echo "des".$row["id_bien"] ; ?>" value="<?php echo $row['descripcion']; ?>" size="25" maxlength="200"/></td>
-    <td align="right"><input name="<?php echo "imp".$row["id_bien"] ; ?>" type="number" id="<?php echo "imp".$row["id_bien"] ; ?>" value="<?php echo $row['importe']; ?>" size="14"/></td>
+    <td align="right"><input name="<?php echo "imp".$row["id_bien"] ; ?>" type="number" id="<?php echo "imp".$row["id_bien"] ; ?>" value="<?php echo $row['importe']; ?>" size="14" min="0" step=".01"/></td>
     <td><?php echo $row["n_serie"]; ?></td>
   </tr>
   <?php } ; }; ?>
