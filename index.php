@@ -1,4 +1,10 @@
-<?php include ('\conexion.php'); ?>
+<?php include ('\conexion.php'); 
+
+//Script para eliminar puntos de Expedientes.
+$sql_puntos=" UPDATE EXPEDIENTES SET MONTOTOTALPEDIDO = replace(MONTOTOTALPEDIDO, '.', '') WHERE MONTOTOTALPEDIDO LIKE '%.%' ";
+$sql_mod_puntoso=sqlsrv_query($conn,$sql_puntos);
+
+?>
 
 <!DOCTYPE html>
 <html lang="en-US">
