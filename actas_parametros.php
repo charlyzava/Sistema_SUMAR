@@ -13,46 +13,37 @@ include ('conexion.php');
 exit;
 }
 
-$nomencladoractual = "";
 $salida = "Bienvenidos!";
 
-$conscompleta="SELECT * FROM SUMAR.dbo.PARAMETROS";//
-		$result=sqlsrv_query($conn,$conscompleta);
-		while ($res=sqlsrv_fetch_array($result)){
-			$nomencladoractual=trim($res['NOMENCLADOR']);
-		}
-$nomenclador=$nomencladoractual;
+include('parametros.php'); // sacamos nomenclador
 
 
 if (isset($_POST['bactualizar'])){
-	// Obtén el valor del input y limpia posibles caracteres no deseados
-	$nuevonomenclador=filter_var($_POST['nomenclador'], FILTER_SANITIZE_STRING);
+		
 	
-	/*------- PREGUNTA SI EXISTE TABLA ----------*/
-	
-	$sqlexiste = "SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?";
-	$params = array($nuevonomenclador);
-	$options = array("Scrollable" => SQLSRV_CURSOR_KEYSET);
-
-	$stmt = sqlsrv_query($conn, $sqlexiste, $params, $options);
-
-	if ($stmt === false) {
-		die(print_r(sqlsrv_errors(), true));
-	}
-
-	if (sqlsrv_num_rows($stmt) > 0) {
-		//echo 'La tabla existe';
+		$sqltodosn="UPDATE SUMAR.dbo.NOMENCLADOR SET VIGENTE = 'N'";
+		$result=sqlsrv_query($conn,$conscompleta);
+		
+		$idnomenclador = $_POST['selectnomenclador'];
+		$salida=$idnomenclador;
 		// Prepara la sentencia SQL con marcadores de posición
-		$sql = "UPDATE SUMAR.dbo.PARAMETROS SET NOMENCLADOR = ? WHERE ID = 1";
+		$sql = "UPDATE SUMAR.dbo.NOMENCLADOR SET VIGENTE = 'S' WHERE ID = ? ";
 
 		// Inicia una sentencia preparada
-		$stmt = sqlsrv_prepare($conn, $sql, array(&$nuevonomenclador));
+		$stmt = sqlsrv_prepare($conn, $sql, array(&$idnomenclador));
 
 		// Ejecuta la sentencia
 		if (sqlsrv_execute($stmt)) {
-			$nomenclador=$nuevonomenclador;
-			$salida = "Nomenclador ".$nuevonomenclador." Grabado";
+			//$nomenclador=$nuevonomenclador;
+			$salida = "Nomenclador id:".$idnomenclador." Grabado";
 			sqlsrv_free_stmt($stmt);
+			
+			/* modifica el resto de registros */
+			$sql = "UPDATE SUMAR.dbo.NOMENCLADOR SET VIGENTE = ? WHERE id <> ?";
+			$params = array("N", $idnomenclador);
+
+			$stmt = sqlsrv_query($conn, $sql, $params);
+			/* modifica el resto de registros */
 			
 		} else {
 			// Manejar errores si la ejecución falla
@@ -62,20 +53,14 @@ if (isset($_POST['bactualizar'])){
 		// Cierra la sentencia preparada
 		//sqlsrv_free_stmt($stmt);
 		
-	} else {
-		$mensaje="La tabla $nuevonomenclador no existe";
-		echo '<script>';
-		echo 'alert($mensaje);';
-		echo '</script>';
-		$salida = 'La tabla '.$nuevonomenclador.' no existe';
-	}
+
 	
-	sqlsrv_close($conn);
+	//sqlsrv_close($conn);
+	
+}	
 	
 	
-	/*-------- FIN PREGUNTA SI EXISTE TABLA */
-	
-}
+
 
 
 Header('Content-Type: text/html; charset=LATIN1');
@@ -157,18 +142,25 @@ font-family: 'Lucida Grande', Tahoma, Arial, Verdana, sans-serif;
 </table>
 </center>
 <form action="" method="post" name="form1" target="_self" id="form1">
-	<p class="mensajerojo">
+  <p class="mensajerojo">
  <span name="jugador"> <?php  echo $salida;  ?></span></p>
 <table width="400" border="1" align="center">
     
   <tr>
     <td colspan="2">Parametros</td>
   </tr>
+ 
   <tr>
     <td>Nomenclador</td>
-    <td><input type="text" value="<?php echo $nomenclador;?>" id="nomenclador" name="nomenclador"></input></td>
+    <td><select name="selectnomenclador" id="selectnomenclador">
+      <?php  $consnomenclador="SELECT * FROM SUMAR.dbo.NOMENCLADOR";//
+		$result=sqlsrv_query($conn,$consnomenclador);
+		while ($res=sqlsrv_fetch_array($result)){ ?>
+      <option value="<?=$res['ID']?>" <?php if ($res['VIGENTE']==='S'){ echo " selected "; }?> ><?=$res['NOMBRE']?></option>
+      <?php } ?>
+      </select></td>
   </tr>
-  <tr>
+	 <tr>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
