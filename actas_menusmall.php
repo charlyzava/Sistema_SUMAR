@@ -25,12 +25,7 @@
           <li> <a href="actas_directos.php">ACTAS DIRECTOS</a> </li>
           <li> <a href="actas_saldoinicial.php">Saldo Inicial</a> </li>
           <li> <a href="actas_saldodisponible_area.php">Saldo Disponible x Area</a> </li>
-          
           <li> <a href="actas_registrofechaop.php">Registro de Fecha de Notificacion/Debito Bancario</a> </li>
-          
-         
-          
-          
           <li> <a href="#">Opciones de prueba</a>
             <ul class="dl-submenu">
               <li> <a href="#">Living Room</a>
