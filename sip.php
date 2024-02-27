@@ -39,6 +39,10 @@ $sql_mod_seleccionado=sqlsrv_query($conn,$mod_seleccionado);
 
 $mod_seleccionado="UPDATE inscripcion.dbo.nivel_N1 SET VAR_0018 = 'K04820' WHERE VAR_0018 LIKE '%10500148%' ";
 $sql_mod_seleccionado=sqlsrv_query($conn,$mod_seleccionado);
+	
+$mod_seleccionado="UPDATE inscripcion.dbo.nivel_N1 SET VAR_0018 = 'K04777' WHERE VAR_0018 LIKE '%7000061%' ";
+$sql_mod_seleccionado=sqlsrv_query($conn,$mod_seleccionado);
+	
 
 
 }
