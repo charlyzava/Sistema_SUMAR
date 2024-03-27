@@ -208,7 +208,7 @@ font-family: 'Lucida Grande', Tahoma, Arial, Verdana, sans-serif;
     </tr>
     <?php			
 	if (isset($_POST['filtrar'])){
-		$sql_bienes="SELECT * FROM SUMAR.dbo.ACTAS A LEFT JOIN SUMAR.dbo.ACTAS_BIENES B ON A.nro_acta = B.nro_acta and a.anio_entrega = b.anio_acta  WHERE cuie='$cuie' order by f_entrega ";
+		$sql_bienes="SELECT * FROM ACTAS.dbo.ACTAS A LEFT JOIN ACTAS.dbo.ACTAS_BIENES B ON A.nro_acta = B.nro_acta and a.anio_acta = b.anio_acta  WHERE cuie='$cuie' order by f_entrega ";
 		$res_bienes=sqlsrv_query($conn,$sql_bienes);			
 		if (isset($res_bienes)){
 		$total=0;	

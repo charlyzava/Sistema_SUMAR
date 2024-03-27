@@ -21,35 +21,6 @@ $res_datos=sqlsrv_query($conn,"SELECT TOP 1 F.Periodo, F.Cuie, E.NOMBREEFECTOR F
 $nomenclador = obtenerNomenclador($periodo, $conn);
 echo $nomenclador;
 
-/*
-Seleccionar tabla Nomenclador según el período
-*/
-//$tabla_prestaciones = "PRESTACIONES".substr($periodo,3);
-//echo $tabla_prestaciones." - ".$periodo;
-
-
-//$fecha = DateTime::createFromFormat('d/m/Y', '01/' . $periodo);
-//$fecha_formateada = $fecha->format('Y-m-d'); // Formato de fecha que acepta la mayoría de las bases de datos (AAAA-MM-DD)
-
-//echo "<br>".$fecha_formateada; // Salida: 2024-01-01
-
-
-/*$sql = "SELECT *
-        FROM NOMENCLADOR
-        WHERE '$fecha_formateada' >= FECHAINICIO
-        AND ('$fecha_formateada' <= FECHAFIN OR FECHAFIN IS NULL)";
-$ressql = sqlsrv_query($conn,$sql);
-    while ($row2=sqlsrv_fetch_array($ressql)){
-        $nomenclador_result=$row2['NOMBRE'];
-        //echo "<br>"." nomenclador= ".$nomenclador_result." fin nomenclador";
-        //echo "<br>".$sql;
-    }*/
-
-
-
-
-
-
 $result=sqlsrv_query($conn,"SELECT * FROM FACTURACION WHERE NumFactura = '$nrofactura' ");
 
 ?>

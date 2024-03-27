@@ -149,7 +149,7 @@ if($parametros <> ""){    $parametros=" WHERE ".$parametros;	    } else
 { $parametros=" WHERE Procesado = 'S' and Autorizado = 'S' "; }
 	$consulta="SELECT Distinct E.AREA, F.IdPrestacion,
 	F.CodPractica, P.CodPrestacion, P.CodObjeto, P.CodDiagnostico, P.NombrePrestacion,   count (F.CodPractica) as cantidad, sum(cast (F.TotalPedido as numeric)) AS totalpedido 
-	from dbo.FACTURACION F LEFT JOIN dbo.PRESTACIONES2022 P ON F.CodPractica = P.CodCompleto
+	from dbo.FACTURACION F LEFT JOIN dbo.PRESTACIONES2023 P ON F.IdPrestacion = P.IdPrestaciones
 	LEFT JOIN dbo.EFECTORES E ON F.Cuie = E.CUIE
 	 $parametros GROUP BY E.AREA, F.IdPrestacion, F.CodPractica, P.CodPrestacion, P.CodObjeto, P.CodDiagnostico, P.NombrePrestacion
 	ORDER BY F.CodPractica";

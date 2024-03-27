@@ -154,7 +154,7 @@ if($parametros <> ""){    $parametros=" WHERE ".$parametros;	    }
 
 	$consulta="select Distinct E.AREA, F.IdPrestacion,
 	F.CodPractica, P.CodPrestacion, P.CodObjeto, P.CodDiagnostico, P.NombrePrestacion, count (F.CodPractica) as cantidad, sum(cast (F.TotalPedido as numeric)) AS totalpedido 
-	from dbo.FACTURACION F LEFT JOIN dbo.PRESTACIONES2022 P ON F.CodPractica = P.CodCompleto
+	from dbo.FACTURACION F LEFT JOIN dbo.PRESTACIONES2023 P ON F.IdPrestacion = P.IdPrestaciones
 	LEFT JOIN dbo.EFECTORES E ON F.Cuie = E.CUIE
 	$parametros GROUP BY E.AREA, F.IdPrestacion, F.CodPractica, P.CodPrestacion, P.CodObjeto, P.CodDiagnostico, P.NombrePrestacion
 	ORDER BY F.CodPractica";
@@ -216,7 +216,7 @@ body {
 <center>
 </center>
 <form action="" method="post" name="form1" target="_self" id="form1">
-  <table width="70%" border="1" align="center" class="texto">
+  <table width="640px" border="1" align="center" class="texto">
     <tr>
       <td>AREA</td>
       <td colspan="2"><label for="tarea"></label>
@@ -226,7 +226,7 @@ body {
       <td>CUIE</td>
       <td colspan="2">
         <label for="selcuie"></label>
-        <?php include('comboselec2.php'); ?>
+        <?php include('comboselec4.php'); ?>
         </td>
     </tr>
     <tr>
